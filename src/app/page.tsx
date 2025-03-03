@@ -1,30 +1,18 @@
 import { createClient } from "@/utils/supabase/server";
-import Image from "next/image";
+import { Database } from "../../database.types";
+import NextRenderList from "@/components/next-render-list";
+import ImageList from "@/components/ui/image-list";
 
 export default async function Home() {
-  const supabase = await createClient();
+  const supabase = await createClient<Database>();
 
-  const { data } = await supabase.from("photos").select().limit(100);
+  const { data } = await supabase.from("photos").select().limit(50);
 
   return (
-    <div className="flex h-screen w-screen justify-center">
+    <div className="flex h-screen w-screen flex-col justify-center">
       <div className="grid h-screen max-w-2xl grid-cols-4 gap-3 overflow-auto">
-        {data &&
-          data.map((d) => (
-            <div
-              key={d.id}
-              className="relative flex h-full w-full items-center justify-center"
-            >
-              <Image
-                src={d.file_url}
-                alt={d.file_name}
-                width={100}
-                height={100}
-                className="h-auto w-auto"
-                priority={true}
-              />
-            </div>
-          ))}
+        {data && <ImageList images={data} />}
+        <NextRenderList />
       </div>
     </div>
   );
