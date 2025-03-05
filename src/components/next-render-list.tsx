@@ -2,11 +2,11 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useIntersectionObserver } from "usehooks-ts";
-import { LoaderCircle } from "lucide-react";
 import { fetchNextImageList } from "@/actions/fetch-next-image-list.actions";
 import { PER_PAGE } from "@/constants/collections.constants";
 import { Tables } from "../../database.types";
 import ImageList from "./ui/image-list";
+import { Dot } from "lucide-react";
 
 type Collection = {
   id: string;
@@ -17,6 +17,7 @@ export default function NextRenderList() {
   const [imageCollections, setImageCollections] = useState<Collection[]>([]);
   const [currentFrom, setCurrentFrom] = useState(PER_PAGE + 1);
   const [currentTo, setCurrentTo] = useState(PER_PAGE * 2);
+  const [isEnableFetchMore, setIsEnableFetchMore] = useState(true);
 
   const { isIntersecting, ref } = useIntersectionObserver({
     threshold: 1,
@@ -24,7 +25,8 @@ export default function NextRenderList() {
 
   const fetchList = useCallback(async () => {
     const { data } = await fetchNextImageList(currentFrom, currentTo);
-    if (data) {
+
+    if (data && data.length > 0) {
       setImageCollections((currentCollections) => [
         ...currentCollections,
         { id: `${currentFrom}-${currentTo}`, data },
@@ -32,14 +34,16 @@ export default function NextRenderList() {
 
       setCurrentFrom(currentTo + 1);
       setCurrentTo((prev) => PER_PAGE * (prev / PER_PAGE + 1));
+    } else {
+      setIsEnableFetchMore(false);
     }
   }, [currentFrom, currentTo]);
 
   useEffect(() => {
-    if (isIntersecting) {
+    if (isIntersecting && isEnableFetchMore) {
       fetchList();
     }
-  }, [isIntersecting, fetchList]);
+  }, [isIntersecting, isEnableFetchMore, fetchList]);
 
   return (
     <>
@@ -50,7 +54,11 @@ export default function NextRenderList() {
         ref={ref}
         className="col-span-4 flex items-center justify-center py-5"
       >
-        <LoaderCircle className="h-10 w-10 animate-spin" />
+        {isEnableFetchMore ? (
+          <span className="loading loading-spinner loading-lg"></span>
+        ) : (
+          <Dot className="h-10 w-10" />
+        )}
       </div>
     </>
   );
