@@ -1,9 +1,9 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import * as motion from "motion/react-client";
 import { Tables } from "../../../database.types";
-import Link from "next/link";
 
 type ImageListProps = {
   images: Tables<"photos">[];
@@ -13,7 +13,7 @@ export default function ImageList({ images }: ImageListProps) {
   return (
     <>
       {images.map((d) => (
-        <Link key={d.id} href={`/${d.id}`}>
+        <Link key={d.id} href={`/detail/${d.id}`}>
           <motion.div
             className="relative flex h-full w-full items-center justify-center"
             whileHover={{ scale: 1.1 }}
