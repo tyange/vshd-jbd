@@ -9,11 +9,10 @@ import {
 import { useRouter } from "next/navigation";
 
 type ModalProps = {
-  title: string;
   children: React.ReactNode;
 };
 
-export default function Modal({ title, children }: ModalProps) {
+export default function Modal({ children }: ModalProps) {
   const router = useRouter();
 
   function handleChangeOpenState(state: boolean) {
@@ -24,9 +23,9 @@ export default function Modal({ title, children }: ModalProps) {
 
   return (
     <Dialog defaultOpen onOpenChange={handleChangeOpenState}>
-      <DialogContent className="p-10">
-        <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
+      <DialogContent className="border-none bg-transparent">
+        <DialogHeader className="hidden">
+          <DialogTitle />
         </DialogHeader>
         {children}
       </DialogContent>
