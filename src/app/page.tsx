@@ -9,8 +9,8 @@ export default async function Home() {
   const { data } = await supabase.from("photos").select().limit(50);
 
   return (
-    <div>
-      <div className="grid h-screen max-w-2xl grid-cols-4 gap-3 overflow-auto p-5">
+    <div className="flex h-screen w-screen items-center justify-center">
+      <div className="grid h-full max-w-2xl grid-cols-4 gap-3 overflow-auto p-5">
         {data && <ImageList images={data} />}
         <NextRenderList />
       </div>
